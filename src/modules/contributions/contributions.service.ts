@@ -25,6 +25,7 @@ export class ContributionsService {
     try{
       return this.prisma.contribution.create({
         data: {
+          employeeId,
           date,
           amount_afp,
           amount_isapre,
