@@ -37,7 +37,7 @@ export class ContributionsService {
       throw new HttpException('Error creating contribution', HttpStatus.BAD_REQUEST);
     }
   }
-
+/*
   async updateContribution(employeeId: string, updateContributionDto:UpdateContributionDto){
     try{
       return this.prisma.contribution.update({
@@ -50,7 +50,31 @@ export class ContributionsService {
       throw new HttpException('Error updating contribution', HttpStatus.BAD_REQUEST);
     }
   }
+*/
 
+async updateContribution(employeeId: string, updateContributionDto: UpdateContributionDto): Promise<Contribution> {
+  try {
+    const updateResult = await this.prisma.contribution.updateMany({
+      where: {
+        employeeId: employeeId, // Asegúrate de usar employeeId aquí
+      },
+      data: updateContributionDto,
+    });
+
+    if (updateResult.count === 0) {
+      throw new HttpException('Contribution not found', HttpStatus.NOT_FOUND);
+    }
+
+    return this.prisma.contribution.findFirst({
+      where: {
+        employeeId: employeeId,
+      },
+    });
+  } catch (error) {
+    throw new HttpException('Error updating contribution', HttpStatus.BAD_REQUEST);
+  }
+}
+  
   async deleteContribution(employeeId: string){
     try{
       return this.prisma.contribution.delete({
